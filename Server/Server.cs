@@ -55,62 +55,97 @@ namespace Server
             {
                 //start listening
                 TcpClient client = server.AcceptTcpClient();
-                StreamReader clientIn = new(client.GetStream());
-                StreamWriter clientOut = new(client.GetStream())
-                {
-                    AutoFlush = true
-                };
+                ThreadPool.QueueUserWorkItem(async (_) => await SolveClient(client));
+                
+            }
+        }
 
-                string msgIn = clientIn.ReadToEnd();
-                //get request
-                Request? request = JsonSerializer.Deserialize<Request>(msgIn);
-                if (request == null)
+        private async Task SolveClient(TcpClient client)
+        {
+            StreamReader clientIn = new(client.GetStream());
+            StreamWriter clientOut = new(client.GetStream())
+            {
+                AutoFlush = true
+            };
+
+            string msgIn = clientIn.ReadToEnd();
+            Request? request = JsonSerializer.Deserialize<Request>(msgIn);
+            Response response;
+            if (request == null)
+            {
+                response = new()
                 {
-                    Response response = new()
+                    Type = ResponseType.ERROR,
+                    Message = "Request couldn't be deserialized"
+                };
+            }
+            else
+            {
+                try
+                {
+                    response = request.Type switch
+                    {
+                        RequestType.POST_PLANNING => await CreatePlanning(request),
+                        RequestType.POST_PAYMENT => await CreatePayment(request),
+                        RequestType.REMOVE_PLANNING => await RemovePlanning(request),
+                        _ => new()
+                        {
+                            Type = ResponseType.ERROR,
+                            Message = $"Wrong request type: {request.Type}"
+                        },
+                    };
+                }
+                catch (Exception ex)
+                {
+                    response = new()
                     {
                         Type = ResponseType.ERROR,
-                        Message = "Request couldn't be deserialized"
+                        Message = ex.Message
                     };
-                    string responseMsg = JsonSerializer.Serialize(response);
-                    clientOut.Write(responseMsg);
-                }
-                else
-                {
-                    ThreadPool.QueueUserWorkItem(async (_) => await SolveRequest(request));
                 }
             }
+            string responseMsg = JsonSerializer.Serialize(response);
+            clientOut.Write(responseMsg);
         }
 
-        private async Task SolveRequest(Request request)
+        private async Task<Response> CreatePlanning(Request request)
         {
-            switch (request.Type)
-            {
-                case RequestType.POST_PLANNING:
-                    await CreatePlanning(request); break;
-                case RequestType.POST_PAYMENT:
-                    await CreatePayment(request); break;
-                case RequestType.REMOVE_PLANNING:
-                    await RemovePlanning(request); break;
-                default:
-                    Console.WriteLine($"Wrong request type: {request.Type}"); break;
-            }
-            //send response
-        }
-
-        private async Task CreatePlanning(Request request)
-        {
-            await _service.CreatePlanning(request.Name, request.Cnp, request.Date, request.TreatmentLocation, request.TreatmentType,
+            Planning planning = await _service.CreatePlanning(request.Name, request.Cnp, request.Date, request.TreatmentLocation, request.TreatmentType,
                 request.TreatmentDate);
+            return new()
+            {
+                Type = ResponseType.OK,
+                Id = planning.Id,
+                Name = planning.Name,
+                Cnp = planning.Cnp,
+                Date = planning.Date,
+                TreatmentLocation = planning.TreatmentLocation,
+                Treatment = planning.Treatment,
+                TreatmentDate = planning.TreatmentDate
+            };
         }
 
-        private async Task CreatePayment(Request request)
+        private async Task<Response> CreatePayment(Request request)
         {
-            await _service.CreatePayment(request.Id, request.Cnp, request.Date, request.Sum);
+            Payment payment = await _service.CreatePayment(request.Id, request.Cnp, request.Date, request.Sum);
+            return new()
+            {
+                Type = ResponseType.OK,
+                Id = payment.Id,
+                PlanningId = payment.PlanningId,
+                Date = payment.Date,
+                Cnp = payment.Cnp,
+                Sum = payment.Sum
+            };
         }
 
-        private async Task RemovePlanning(Request request)
+        private async Task<Response> RemovePlanning(Request request)
         {
             await _service.RemovePlanning(request.Id);
+            return new()
+            {
+                Type = ResponseType.OK
+            };
         }
 
         private void VerifySistem()
