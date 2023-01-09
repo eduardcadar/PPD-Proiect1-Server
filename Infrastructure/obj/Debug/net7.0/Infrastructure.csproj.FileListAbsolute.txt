@@ -1,0 +1,15 @@
+C:\facultate\Semestrul 5\PPD\PPD-Proiect1-Server\Infrastructure\obj\Debug\net7.0\Infrastructure.csproj.AssemblyReference.cache
+C:\facultate\Semestrul 5\PPD\PPD-Proiect1-Server\Infrastructure\obj\Debug\net7.0\Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
+C:\facultate\Semestrul 5\PPD\PPD-Proiect1-Server\Infrastructure\obj\Debug\net7.0\Infrastructure.AssemblyInfoInputs.cache
+C:\facultate\Semestrul 5\PPD\PPD-Proiect1-Server\Infrastructure\obj\Debug\net7.0\Infrastructure.AssemblyInfo.cs
+C:\facultate\Semestrul 5\PPD\PPD-Proiect1-Server\Infrastructure\obj\Debug\net7.0\Infrastructure.csproj.CoreCompileInputs.cache
+C:\facultate\Semestrul 5\PPD\PPD-Proiect1-Server\Infrastructure\bin\Debug\net7.0\Infrastructure.deps.json
+C:\facultate\Semestrul 5\PPD\PPD-Proiect1-Server\Infrastructure\bin\Debug\net7.0\Infrastructure.dll
+C:\facultate\Semestrul 5\PPD\PPD-Proiect1-Server\Infrastructure\bin\Debug\net7.0\Infrastructure.pdb
+C:\facultate\Semestrul 5\PPD\PPD-Proiect1-Server\Infrastructure\bin\Debug\net7.0\Domain.dll
+C:\facultate\Semestrul 5\PPD\PPD-Proiect1-Server\Infrastructure\bin\Debug\net7.0\Domain.pdb
+C:\facultate\Semestrul 5\PPD\PPD-Proiect1-Server\Infrastructure\obj\Debug\net7.0\Infrastructure.csproj.CopyComplete
+C:\facultate\Semestrul 5\PPD\PPD-Proiect1-Server\Infrastructure\obj\Debug\net7.0\Infrastructure.dll
+C:\facultate\Semestrul 5\PPD\PPD-Proiect1-Server\Infrastructure\obj\Debug\net7.0\refint\Infrastructure.dll
+C:\facultate\Semestrul 5\PPD\PPD-Proiect1-Server\Infrastructure\obj\Debug\net7.0\Infrastructure.pdb
+C:\facultate\Semestrul 5\PPD\PPD-Proiect1-Server\Infrastructure\obj\Debug\net7.0\ref\Infrastructure.dll

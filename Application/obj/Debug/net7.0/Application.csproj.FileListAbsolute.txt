@@ -1,0 +1,15 @@
+C:\facultate\Semestrul 5\PPD\PPD-Proiect1-Server\Application\obj\Debug\net7.0\Application.csproj.AssemblyReference.cache
+C:\facultate\Semestrul 5\PPD\PPD-Proiect1-Server\Application\obj\Debug\net7.0\Application.GeneratedMSBuildEditorConfig.editorconfig
+C:\facultate\Semestrul 5\PPD\PPD-Proiect1-Server\Application\obj\Debug\net7.0\Application.AssemblyInfoInputs.cache
+C:\facultate\Semestrul 5\PPD\PPD-Proiect1-Server\Application\obj\Debug\net7.0\Application.AssemblyInfo.cs
+C:\facultate\Semestrul 5\PPD\PPD-Proiect1-Server\Application\obj\Debug\net7.0\Application.csproj.CoreCompileInputs.cache
+C:\facultate\Semestrul 5\PPD\PPD-Proiect1-Server\Application\bin\Debug\net7.0\Application.deps.json
+C:\facultate\Semestrul 5\PPD\PPD-Proiect1-Server\Application\bin\Debug\net7.0\Application.dll
+C:\facultate\Semestrul 5\PPD\PPD-Proiect1-Server\Application\bin\Debug\net7.0\Application.pdb
+C:\facultate\Semestrul 5\PPD\PPD-Proiect1-Server\Application\bin\Debug\net7.0\Domain.dll
+C:\facultate\Semestrul 5\PPD\PPD-Proiect1-Server\Application\bin\Debug\net7.0\Domain.pdb
+C:\facultate\Semestrul 5\PPD\PPD-Proiect1-Server\Application\obj\Debug\net7.0\Application.csproj.CopyComplete
+C:\facultate\Semestrul 5\PPD\PPD-Proiect1-Server\Application\obj\Debug\net7.0\Application.dll
+C:\facultate\Semestrul 5\PPD\PPD-Proiect1-Server\Application\obj\Debug\net7.0\refint\Application.dll
+C:\facultate\Semestrul 5\PPD\PPD-Proiect1-Server\Application\obj\Debug\net7.0\Application.pdb
+C:\facultate\Semestrul 5\PPD\PPD-Proiect1-Server\Application\obj\Debug\net7.0\ref\Application.dll

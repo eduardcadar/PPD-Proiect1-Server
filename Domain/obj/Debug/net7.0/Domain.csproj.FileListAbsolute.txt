@@ -1,0 +1,12 @@
+C:\facultate\Semestrul 5\PPD\PPD-Proiect1-Server\Domain\bin\Debug\net7.0\Domain.deps.json
+C:\facultate\Semestrul 5\PPD\PPD-Proiect1-Server\Domain\bin\Debug\net7.0\Domain.dll
+C:\facultate\Semestrul 5\PPD\PPD-Proiect1-Server\Domain\bin\Debug\net7.0\Domain.pdb
+C:\facultate\Semestrul 5\PPD\PPD-Proiect1-Server\Domain\obj\Debug\net7.0\Domain.csproj.AssemblyReference.cache
+C:\facultate\Semestrul 5\PPD\PPD-Proiect1-Server\Domain\obj\Debug\net7.0\Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\facultate\Semestrul 5\PPD\PPD-Proiect1-Server\Domain\obj\Debug\net7.0\Domain.AssemblyInfoInputs.cache
+C:\facultate\Semestrul 5\PPD\PPD-Proiect1-Server\Domain\obj\Debug\net7.0\Domain.AssemblyInfo.cs
+C:\facultate\Semestrul 5\PPD\PPD-Proiect1-Server\Domain\obj\Debug\net7.0\Domain.csproj.CoreCompileInputs.cache
+C:\facultate\Semestrul 5\PPD\PPD-Proiect1-Server\Domain\obj\Debug\net7.0\Domain.dll
+C:\facultate\Semestrul 5\PPD\PPD-Proiect1-Server\Domain\obj\Debug\net7.0\refint\Domain.dll
+C:\facultate\Semestrul 5\PPD\PPD-Proiect1-Server\Domain\obj\Debug\net7.0\Domain.pdb
+C:\facultate\Semestrul 5\PPD\PPD-Proiect1-Server\Domain\obj\Debug\net7.0\ref\Domain.dll
