@@ -1,5 +1,6 @@
 ﻿using Domain.Domain;
 using Domain.Repository;
+using System.Globalization;
 using System.Text;
 
 namespace Application
@@ -103,53 +104,78 @@ namespace Application
 
         public async Task VerifyPlannings(int numberOfLocations)
         {
-            List<Planning> plannings = await _planningRepo.GetAll();
+            string fileName = $"./Files/verif{DateTime.Now}";
+            List <Planning> plannings = await _planningRepo.GetAll();
             List<Payment> payments = await _paymentRepo.GetAll();
             List<Treatment> treatments = await _treatmentRepo.GetAll();
             List<LocationTreatment> locationTreatments = await _treatmentLocationRepo.GetAll();
             StringBuilder sb = new();
             StringBuilder sbNotPaid = new();
+            StringBuilder sbNumberOfPlannings = new();
+            sb.AppendLine("-----VERIFICARE-----");
 
-            for (int i = 1; i <= numberOfLocations; i++)
+            for (int locationNumber = 1; locationNumber <= numberOfLocations; locationNumber++)
             {
-                List<int> locationPlanningsIds = plannings
-                    .Where(p => p.TreatmentLocation == i)
+                sbNotPaid.Clear();
+                sbNumberOfPlannings.Clear();
+                List<Planning> locationPlannings = plannings
+                    .Where(p => p.TreatmentLocation == locationNumber).ToList();
+                List<int> locationPlanningsIds = locationPlannings
                     .Select(p => p.TreatmentLocation).ToList();
                 List<Payment> locationPayments = payments
                     .Where(p => p.PlanningId != null)
                     .Where(p => locationPlanningsIds.Contains((int)p.PlanningId!)).ToList();
                 int locationSum = locationPayments.Select(p => p.Sum).Sum();
 
-                sb.Append($"Ora verificarii: {DateTime.Now}")
-                    .AppendLine()
-                    .Append($"Sold locatie {i}: {locationSum}")
-                    .AppendLine();
-            }
+                sb.AppendLine($"Ora verificarii: {DateTime.Now}")
+                    .AppendLine($"Sold locatie {locationNumber}: {locationSum}");
 
-            foreach (Planning planning in plannings)
-            {
-                int numberOfPlannings = plannings
-                    .Where(p => p.TreatmentLocation == planning.TreatmentLocation
-                    && p.Treatment.TreatmentType == planning.Treatment.TreatmentType
-                    && (p.TreatmentDate >= planning.TreatmentDate && p.TreatmentDate < planning.TreatmentDate.AddMinutes(planning.Treatment.Duration)
-                        || planning.TreatmentDate >= p.TreatmentDate && planning.TreatmentDate < p.TreatmentDate.AddMinutes(p.Treatment.Duration)))
-                    .Count();
-                Treatment treatment = planning.Treatment;
-                LocationTreatment locationTreatment = locationTreatments
-                    .Single(lt => lt.Location == planning.TreatmentLocation
-                    && lt.Treatment.TreatmentType == planning.Treatment.TreatmentType);
-                if (numberOfPlannings > locationTreatment.MaxPatients)
-                    throw new Exception($"Too many planings at the same time with {planning}");
+                // lista programarilor neplatite
+                foreach (Planning planning in locationPlannings)
+                {
+                    List<Payment> planningPayments = payments
+                        .Where(p => p.PlanningId == planning.Id).ToList();
+                    int sum = planningPayments.Select(p => p.Sum).Sum();
+                    if (sum != planning.Treatment.Cost)
+                        sbNotPaid.AppendLine($"Planning {planning.Id}: treatment costs {planning.Treatment.Cost}, but {sum} was paid");
+                }
 
-                List<Payment> planningPayments = payments
-                    .Where(p => p.PlanningId == planning.Id).ToList();
-                int sum = planningPayments.Select(p => p.Sum).Sum();
-                if (sum != planning.Treatment.Cost)
-                    sbNotPaid.Append($"Treatment costs {treatment.Cost}, but {sum} was paid")
-                        .AppendLine();
-            }
-            sb.Append(sbNotPaid);
+                // pentru fiecare tip de programare (tratament)
+                foreach (Treatment treatment in treatments)
+                {
+                    LocationTreatment locationTreatment = locationTreatments
+                        .Single(lt => lt.Location == locationNumber
+                        && lt.Treatment.TreatmentType == treatment.TreatmentType);
+                    sbNumberOfPlannings.AppendLine($"---Treatment {treatment.TreatmentType}, max plannings: {locationTreatment.MaxPatients}");
+                    HashSet<TimeOnly> changes = new()
+                    {
+                        TimeOnly.Parse("10:00"),
+                        TimeOnly.Parse("18:00")
+                    };
+                    var locationTreatmentPlannings = plannings
+                        .Where(p => p.Treatment.TreatmentType == treatment.TreatmentType && p.TreatmentLocation == locationNumber);
+                    changes.UnionWith(locationTreatmentPlannings.Select(p => TimeOnly.FromDateTime(p.TreatmentDate)));
+                    changes.UnionWith(locationTreatmentPlannings.Select(p => TimeOnly.FromDateTime(p.TreatmentDate.AddMinutes(p.Treatment.Duration))));
+                    List<TimeOnly> changesList = changes.ToList();
+                    changesList.Sort((p1, p2) => p1.CompareTo(p2));
+                    for (int j = 0; j < changesList.Count - 1; j++)
+                    {
+                        TimeOnly change = changesList[j];
+                        TimeOnly nextChange = changesList[j + 1];
+                        int numberOfPlannings = locationTreatmentPlannings.Where(p =>
+                            {
+                                var planningTimeOnly = TimeOnly.FromDateTime(p.TreatmentDate);
+                                return planningTimeOnly >= change && planningTimeOnly < nextChange
+                                    || change >= planningTimeOnly && change < planningTimeOnly.AddMinutes(p.Treatment.Duration);
+                            }).Count();
 
+                        sbNumberOfPlannings.AppendLine($"{change}-{nextChange}: {numberOfPlannings} plannings");
+                    };
+                }
+                sb.Append(sbNotPaid);
+                sb.Append(sbNumberOfPlannings);
+            } 
+            File.AppendAllText(fileName, sb.ToString());
         }
     }
 }
