@@ -1,5 +1,4 @@
-﻿using Domain.Domain;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Infrastructure.Persistence.Entities
 {

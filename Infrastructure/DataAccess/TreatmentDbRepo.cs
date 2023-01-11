@@ -1,48 +1,63 @@
 ﻿using Domain.Domain;
 using Domain.Repository;
 using Infrastructure.Persistence;
-using Infrastructure.Persistence.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.DataAccess
 {
     public class TreatmentDbRepo : ITreatmentRepo
     {
-        private readonly DatabaseContext _dbContext;
+        private readonly DbContextOptions<DatabaseContext> _options;
 
-        public TreatmentDbRepo(DatabaseContext dbContext)
+        public TreatmentDbRepo(DbContextOptions<DatabaseContext> options)
         {
-            _dbContext = dbContext;
-            _dbContext.Database.EnsureCreated();
+            _options = options;
+        }
+
+        private DatabaseContext InitializeDbContext()
+        {
+            DatabaseContext dbContext = new(_options);
+            dbContext.Database.EnsureCreated();
+            return dbContext;
         }
 
         public async Task<Treatment> Add(Treatment treatment)
         {
+            var dbContext = InitializeDbContext();
             var dbTreatment = EntityUtils.TreatmentToDbTreatment(treatment);
-            await _dbContext.Treatments.AddAsync(dbTreatment);
-            await _dbContext.SaveChangesAsync();
+            await dbContext.Treatments.AddAsync(dbTreatment);
+            dbContext.Database.OpenConnection();
+            dbContext.Database.ExecuteSql($"SET IDENTITY_INSERT Treatments ON;");
+            await dbContext.SaveChangesAsync();
+            dbContext.Database.ExecuteSql($"SET IDENTITY_INSERT Treatments OFF;");
             return treatment;
         }
 
         public async Task AddRange(List<Treatment> treatments)
         {
+            var dbContext = InitializeDbContext();
             foreach (Treatment treatment in treatments)
             {
                 var dbTreatment = EntityUtils.TreatmentToDbTreatment(treatment);
-                await _dbContext.Treatments.AddAsync(dbTreatment);
+                await dbContext.Treatments.AddAsync(dbTreatment);
             }
-            await _dbContext.SaveChangesAsync();
+            dbContext.Database.OpenConnection();
+            dbContext.Database.ExecuteSql($"SET IDENTITY_INSERT Treatments ON;");
+            await dbContext.SaveChangesAsync();
+            dbContext.Database.ExecuteSql($"SET IDENTITY_INSERT Treatments OFF;");
         }
 
         public async Task Clear()
         {
-            _dbContext.Treatments.RemoveRange(_dbContext.Treatments);
-            await _dbContext.SaveChangesAsync();
+            var dbContext = InitializeDbContext();
+            dbContext.Treatments.RemoveRange(dbContext.Treatments);
+            await dbContext.SaveChangesAsync();
         }
 
         public async Task<List<Treatment>> GetAll()
         {
-            var dbTreatments = await _dbContext.Treatments.ToListAsync();
+            var dbContext = InitializeDbContext();
+            var dbTreatments = await dbContext.Treatments.ToListAsync();
             var treatments = dbTreatments
                 .Select(EntityUtils.DbTreatmentToTreatment).ToList();
             return treatments;

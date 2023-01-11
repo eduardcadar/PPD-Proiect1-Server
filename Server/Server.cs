@@ -18,13 +18,13 @@ namespace Server
             _service = planningsService;
         }
 
-        public void SetTreatments(List<Treatment> treatments, List<LocationTreatment> locationTreatments, int numberOfLocations)
+        public async Task SetTreatments(List<Treatment> treatments, List<LocationTreatment> locationTreatments, int numberOfLocations)
         {
             _numberOfLocations = numberOfLocations;
-            _service.SetTreatments(treatments, locationTreatments);
+            await _service.SetTreatments(treatments, locationTreatments);
         }
 
-            public async Task StartServer(int noThreads, int millisecondsToRun, int millisecondsToVerify)
+            public void StartServer(int noThreads, int millisecondsToRun, int millisecondsToVerify)
         {
             _millisecondsToVerify = millisecondsToVerify;
             ThreadPool.SetMaxThreads(noThreads, noThreads);
@@ -54,7 +54,9 @@ namespace Server
             while (true)
             {
                 //start listening
+                Console.WriteLine("Waiting for client to connect...");
                 TcpClient client = server.AcceptTcpClient();
+                Console.WriteLine("Client connected!");
                 ThreadPool.QueueUserWorkItem(async (_) => await SolveClient(client));
                 
             }
@@ -148,12 +150,17 @@ namespace Server
             };
         }
 
-        private void VerifySistem()
+        private async void VerifySistem()
         {
-            Thread.Sleep(_millisecondsToVerify);
+            while (true)
+            {
+                Thread.Sleep(_millisecondsToVerify);
 
-            //verify
-            _service.VerifyPlannings(_numberOfLocations);
+                //verify
+                Console.WriteLine("Verifying system...");
+                await _service.VerifyPlannings(_numberOfLocations);
+                Console.WriteLine("Verification complete!");
+            }
         }
     }
 }

@@ -7,26 +7,34 @@ namespace Infrastructure.DataAccess
 {
     public class PaymentDbRepo : IPaymentRepo
     {
-        private readonly DatabaseContext _dbContext;
+        private readonly DbContextOptions<DatabaseContext> _options;
 
-        public PaymentDbRepo(DatabaseContext dbContext)
+        public PaymentDbRepo(DbContextOptions<DatabaseContext> options)
         {
-            _dbContext = dbContext;
-            _dbContext.Database.EnsureCreated();
+            _options = options;
+        }
+
+        private DatabaseContext InitializeDbContext()
+        {
+            DatabaseContext dbContext = new(_options);
+            dbContext.Database.EnsureCreated();
+            return dbContext;
         }
 
         public async Task<Payment> Add(Payment payment)
         {
+            var dbContext = InitializeDbContext();
             var dbPayment = EntityUtils.PaymentToDbPayment(payment);
-            await _dbContext.Payments.AddAsync(dbPayment);
-            await _dbContext.SaveChangesAsync();
+            await dbContext.Payments.AddAsync(dbPayment);
+            await dbContext.SaveChangesAsync();
             payment.Id = dbPayment.Id;
             return payment;
         }
 
         public async Task<List<Payment>> GetAll()
         {
-            var dbPayments = await _dbContext.Payments.ToListAsync();
+            var dbContext = InitializeDbContext();
+            var dbPayments = await dbContext.Payments.ToListAsync();
             var payments = dbPayments
                 .Select(EntityUtils.DbPaymentToPayment).ToList();
             return payments;

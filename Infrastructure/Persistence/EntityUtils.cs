@@ -81,8 +81,8 @@ namespace Infrastructure.Persistence
         {
             return new()
             {
-                Treatment = TreatmentToDbTreatment(locationTreatment.Treatment),
-                TreatmentType = locationTreatment.Treatment.TreatmentType,
+                //Treatment = TreatmentToDbTreatment(locationTreatment.Treatment),
+                TreatmentType = (int)locationTreatment.Treatment.TreatmentType,
                 Location = locationTreatment.Location,
                 MaxPatients = locationTreatment.MaxPatients
             };

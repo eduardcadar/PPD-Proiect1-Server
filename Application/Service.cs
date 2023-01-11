@@ -94,7 +94,7 @@ namespace Application
             return await _treatmentLocationRepo.Add(treatment);
         }
 
-        public async void SetTreatments(List<Treatment> treatments, List<LocationTreatment> locationTreatments)
+        public async Task SetTreatments(List<Treatment> treatments, List<LocationTreatment> locationTreatments)
         {
             await _treatmentRepo.Clear();
             await _treatmentLocationRepo.Clear();
@@ -104,7 +104,8 @@ namespace Application
 
         public async Task VerifyPlannings(int numberOfLocations)
         {
-            string fileName = $"./Files/verif{DateTime.Now}";
+        
+            string fileName = @$"C:\facultate\Semestrul 5\PPD\PPD-Proiect1-Server\Server\Files\verif{DateTime.Now:yyyyMMddHHmmss}.txt";
             List <Planning> plannings = await _planningRepo.GetAll();
             List<Payment> payments = await _paymentRepo.GetAll();
             List<Treatment> treatments = await _treatmentRepo.GetAll();

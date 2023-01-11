@@ -7,41 +7,51 @@ namespace Infrastructure.DataAccess
 {
     public class TreatmentLocationDbRepo : ITreatmentLocationRepo
     {
-        private readonly DatabaseContext _dbContext;
+        private readonly DbContextOptions<DatabaseContext> _options;
 
-        public TreatmentLocationDbRepo(DatabaseContext dbContext)
+        public TreatmentLocationDbRepo(DbContextOptions<DatabaseContext> options)
         {
-            _dbContext = dbContext;
-            _dbContext.Database.EnsureCreated();
+            _options = options;
+        }
+
+        private DatabaseContext InitializeDbContext()
+        {
+            DatabaseContext dbContext = new(_options);
+            dbContext.Database.EnsureCreated();
+            return dbContext;
         }
 
         public async Task<LocationTreatment> Add(LocationTreatment locationTreatment)
         {
+            var dbContext = InitializeDbContext();
             var dbLocationTreatment = EntityUtils.LocationTreatmentToDbLocationTreatment(locationTreatment);
-            await _dbContext.LocationTreatments.AddAsync(dbLocationTreatment);
-            await _dbContext.SaveChangesAsync();
+            await dbContext.LocationTreatments.AddAsync(dbLocationTreatment);
+            await dbContext.SaveChangesAsync();
             return locationTreatment;
         }
 
         public async Task AddRange(List<LocationTreatment> locationTreatments)
         {
+            var dbContext = InitializeDbContext();
             foreach (LocationTreatment locationTreatment in locationTreatments)
             {
                 var dbLocationTreatment = EntityUtils.LocationTreatmentToDbLocationTreatment(locationTreatment);
-                await _dbContext.LocationTreatments.AddAsync(dbLocationTreatment);
+                await dbContext.LocationTreatments.AddAsync(dbLocationTreatment);
             }
-            await _dbContext.SaveChangesAsync();
+            await dbContext.SaveChangesAsync();
         }
 
         public async Task Clear()
         {
-            _dbContext.LocationTreatments.RemoveRange(_dbContext.LocationTreatments);
-            await _dbContext.SaveChangesAsync();
+            var dbContext = InitializeDbContext();
+            dbContext.LocationTreatments.RemoveRange(dbContext.LocationTreatments);
+            await dbContext.SaveChangesAsync();
         }
 
         public async Task<List<LocationTreatment>> GetAll()
         {
-            var dbLocationTreatments = await _dbContext.LocationTreatments.ToListAsync();
+            var dbContext = InitializeDbContext();
+            var dbLocationTreatments = await dbContext.LocationTreatments.Include(lt => lt.Treatment).ToListAsync();
             var locationTreatments = dbLocationTreatments
                 .Select(EntityUtils.DbLocationTreatmentToLocationTreatment) .ToList();
             return locationTreatments;

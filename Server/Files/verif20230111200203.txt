@@ -1,0 +1,61 @@
+-----VERIFICARE-----
+Ora verificarii: 11/01/2023 8:02:04 pm
+Sold locatie 1: 0
+---Treatment 1, max plannings: 3
+10:00 am-6:00 pm: 0 plannings
+---Treatment 2, max plannings: 1
+10:00 am-6:00 pm: 0 plannings
+---Treatment 3, max plannings: 1
+10:00 am-6:00 pm: 0 plannings
+---Treatment 4, max plannings: 2
+10:00 am-6:00 pm: 0 plannings
+---Treatment 5, max plannings: 1
+10:00 am-6:00 pm: 0 plannings
+Ora verificarii: 11/01/2023 8:02:04 pm
+Sold locatie 2: 0
+---Treatment 1, max plannings: 3
+10:00 am-6:00 pm: 0 plannings
+---Treatment 2, max plannings: 1
+10:00 am-6:00 pm: 0 plannings
+---Treatment 3, max plannings: 1
+10:00 am-6:00 pm: 0 plannings
+---Treatment 4, max plannings: 2
+10:00 am-6:00 pm: 0 plannings
+---Treatment 5, max plannings: 1
+10:00 am-6:00 pm: 0 plannings
+Ora verificarii: 11/01/2023 8:02:04 pm
+Sold locatie 3: 0
+---Treatment 1, max plannings: 6
+10:00 am-6:00 pm: 0 plannings
+---Treatment 2, max plannings: 2
+10:00 am-6:00 pm: 0 plannings
+---Treatment 3, max plannings: 2
+10:00 am-6:00 pm: 0 plannings
+---Treatment 4, max plannings: 4
+10:00 am-6:00 pm: 0 plannings
+---Treatment 5, max plannings: 2
+10:00 am-6:00 pm: 0 plannings
+Ora verificarii: 11/01/2023 8:02:04 pm
+Sold locatie 4: 0
+---Treatment 1, max plannings: 9
+10:00 am-6:00 pm: 0 plannings
+---Treatment 2, max plannings: 3
+10:00 am-6:00 pm: 0 plannings
+---Treatment 3, max plannings: 3
+10:00 am-6:00 pm: 0 plannings
+---Treatment 4, max plannings: 6
+10:00 am-6:00 pm: 0 plannings
+---Treatment 5, max plannings: 3
+10:00 am-6:00 pm: 0 plannings
+Ora verificarii: 11/01/2023 8:02:04 pm
+Sold locatie 5: 0
+---Treatment 1, max plannings: 12
+10:00 am-6:00 pm: 0 plannings
+---Treatment 2, max plannings: 4
+10:00 am-6:00 pm: 0 plannings
+---Treatment 3, max plannings: 4
+10:00 am-6:00 pm: 0 plannings
+---Treatment 4, max plannings: 8
+10:00 am-6:00 pm: 0 plannings
+---Treatment 5, max plannings: 4
+10:00 am-6:00 pm: 0 plannings

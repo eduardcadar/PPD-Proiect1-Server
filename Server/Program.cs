@@ -3,18 +3,20 @@ using Domain.Domain;
 using Domain.Repository;
 using Infrastructure.DataAccess;
 using Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
 using System.Configuration;
 
 Console.WriteLine("Server starting...");
 
-string connectionString = ConfigurationManager.AppSettings["connectionString"];
+string connectionString = ConfigurationManager.AppSettings["connectionString"]!;
 
-DatabaseContext dbContext = new();
+DbContextOptionsBuilder<DatabaseContext> options = new();
+var optionss = options.UseSqlServer(connectionString: connectionString).Options;
 
-IPlanningRepo planningRepo = new PlanningDbRepo(dbContext);
-IPaymentRepo paymentRepo = new PaymentDbRepo(dbContext);
-ITreatmentRepo treatmentRepo = new TreatmentDbRepo(dbContext);
-ITreatmentLocationRepo treatmentLocationRepo = new TreatmentLocationDbRepo(dbContext);
+IPlanningRepo planningRepo = new PlanningDbRepo(optionss);
+IPaymentRepo paymentRepo = new PaymentDbRepo(optionss);
+ITreatmentRepo treatmentRepo = new TreatmentDbRepo(optionss);
+ITreatmentLocationRepo treatmentLocationRepo = new TreatmentLocationDbRepo(optionss);
 
 Service planningsService = new(planningRepo, paymentRepo, treatmentRepo, treatmentLocationRepo);
 
@@ -43,12 +45,12 @@ for (int i = 2; i <= numberOfLocations; i++)
             Location = i,
             Treatment = treatment,
             MaxPatients = locationTreatments
-                .First(lt => lt.Location == i && lt.Treatment.TreatmentType == treatment.TreatmentType).MaxPatients * (i - 1)
+                .Single(lt => lt.Location == 1 && lt.Treatment.TreatmentType == treatment.TreatmentType).MaxPatients * (i - 1)
         });
 
 int noThreads = 10;
 int millisecondsToRun = 180000;
 int millisecondsToVerify = 5000;
 Server.Server server = new(planningsService);
-server.SetTreatments(treatments, locationTreatments, numberOfLocations);
-await server.StartServer(noThreads, millisecondsToRun, millisecondsToVerify);
+await server.SetTreatments(treatments, locationTreatments, numberOfLocations);
+server.StartServer(noThreads, millisecondsToRun, millisecondsToVerify);

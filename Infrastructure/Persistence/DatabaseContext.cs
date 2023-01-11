@@ -10,7 +10,8 @@ namespace Infrastructure.Persistence
         public DbSet<DbTreatment> Treatments { get; set; }
         public DbSet<DbLocationTreatment> LocationTreatments { get; set; }
 
-        //public DatabaseContext(DbContextOptions<DatabaseContext> op) : base(op) { }
+        public DatabaseContext() : base() { }
+        public DatabaseContext(DbContextOptions<DatabaseContext> options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
