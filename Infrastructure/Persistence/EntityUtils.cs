@@ -52,7 +52,7 @@ namespace Infrastructure.Persistence
                 Cnp = planning.Cnp,
                 Date = planning.Date,
                 TreatmentLocation = planning.TreatmentLocation,
-                Treatment = TreatmentToDbTreatment(planning.Treatment),
+                TreatmentType = planning.Treatment.TreatmentType,
                 TreatmentDate = planning.TreatmentDate
             };
         }

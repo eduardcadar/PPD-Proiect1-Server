@@ -11,16 +11,16 @@ namespace Server
     {
         private readonly Service _service;
         private int _millisecondsToVerify;
-        private int _numberOfLocations;
+        private readonly int _numberOfLocations;
 
-        public Server(Service planningsService)
+        public Server(Service planningsService, int numberOfLocations)
         {
+            _numberOfLocations = numberOfLocations;
             _service = planningsService;
         }
 
-        public async Task SetTreatments(List<Treatment> treatments, List<LocationTreatment> locationTreatments, int numberOfLocations)
+        public async Task SetTreatments(List<Treatment> treatments, List<LocationTreatment> locationTreatments)
         {
-            _numberOfLocations = numberOfLocations;
             await _service.SetTreatments(treatments, locationTreatments);
         }
 
@@ -35,7 +35,7 @@ namespace Server
             };
             timer.Elapsed += (sender, e) => {
                 timer.Dispose();
-
+                Console.WriteLine("S-a terminat timpul, serverul se inchide...");
                 Environment.Exit(0);
             };
 
@@ -58,57 +58,67 @@ namespace Server
                 TcpClient client = server.AcceptTcpClient();
                 Console.WriteLine("Client connected!");
                 ThreadPool.QueueUserWorkItem(async (_) => await SolveClient(client));
-                
             }
         }
 
         private async Task SolveClient(TcpClient client)
         {
+            bool connected = true;
             StreamReader clientIn = new(client.GetStream());
             StreamWriter clientOut = new(client.GetStream())
             {
                 AutoFlush = true
             };
 
-            string msgIn = clientIn.ReadToEnd();
-            Request? request = JsonSerializer.Deserialize<Request>(msgIn);
-            Response response;
-            if (request == null)
+            while (connected)
             {
-                response = new()
-                {
-                    Type = ResponseType.ERROR,
-                    Message = "Request couldn't be deserialized"
-                };
-            }
-            else
-            {
-                try
-                {
-                    response = request.Type switch
-                    {
-                        RequestType.POST_PLANNING => await CreatePlanning(request),
-                        RequestType.POST_PAYMENT => await CreatePayment(request),
-                        RequestType.REMOVE_PLANNING => await RemovePlanning(request),
-                        _ => new()
-                        {
-                            Type = ResponseType.ERROR,
-                            Message = $"Wrong request type: {request.Type}"
-                        },
-                    };
-                }
-                catch (Exception ex)
+                Console.WriteLine("Receiving req from client...");
+                string msgIn = clientIn.ReadLine();
+                Console.WriteLine($"Received request: {msgIn}");
+                Request? request = JsonSerializer.Deserialize<Request>(msgIn);
+                Response response;
+                if (request == null)
                 {
                     response = new()
                     {
                         Type = ResponseType.ERROR,
-                        Message = ex.Message
+                        Message = "Request couldn't be deserialized"
                     };
                 }
+                else
+                {
+                    try
+                    {
+                        if (request.Type == RequestType.DISCONNECTING)
+                        {
+                            connected = false;
+                            break;
+                        }
+                        response = request.Type switch
+                        {
+                            RequestType.POST_PLANNING => await CreatePlanning(request),
+                            RequestType.POST_PAYMENT => await CreatePayment(request),
+                            RequestType.REMOVE_PLANNING => await RemovePlanning(request),
+                            _ => new()
+                            {
+                                Type = ResponseType.ERROR,
+                                Message = $"Wrong request type: {request.Type}"
+                            },
+                        };
+                    }
+                    catch (Exception ex)
+                    {
+                        response = new()
+                        {
+                            Type = ResponseType.ERROR,
+                            Message = ex.Message
+                        };
+                    }
+                }
+                string responseMsg = JsonSerializer.Serialize(response);
+                Console.WriteLine($"Sendind response to client: {responseMsg}");
+                clientOut.WriteLine(responseMsg);
             }
-            string responseMsg = JsonSerializer.Serialize(response);
-            Console.WriteLine($"Sendind response to client: {responseMsg}");
-            clientOut.Write(responseMsg);
         }
 
         private async Task<Response> CreatePlanning(Request request)
@@ -158,7 +168,6 @@ namespace Server
         {
             while (true)
             {
-                return;
                 Thread.Sleep(_millisecondsToVerify);
 
                 //verify

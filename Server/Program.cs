@@ -49,8 +49,8 @@ for (int i = 2; i <= numberOfLocations; i++)
         });
 
 int noThreads = 10;
-int millisecondsToRun = 180000;
+int millisecondsToRun = 18000;
 int millisecondsToVerify = 5000;
-Server.Server server = new(planningsService);
-await server.SetTreatments(treatments, locationTreatments, numberOfLocations);
+Server.Server server = new(planningsService, numberOfLocations);
+//await server.SetTreatments(treatments, locationTreatments);
 server.StartServer(noThreads, millisecondsToRun, millisecondsToVerify);

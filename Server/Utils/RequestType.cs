@@ -2,6 +2,6 @@
 {
     public enum RequestType
     {
-        POST_PLANNING, POST_PAYMENT, REMOVE_PLANNING
+        POST_PLANNING, POST_PAYMENT, REMOVE_PLANNING, DISCONNECTING
     }
 }

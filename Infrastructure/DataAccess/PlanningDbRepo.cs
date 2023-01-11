@@ -52,7 +52,7 @@ namespace Infrastructure.DataAccess
         public async Task<Planning> Delete(int idPlanning)
         {
             var dbContext = InitializeDbContext();
-            var dbPlanning = await dbContext.Plannings
+            var dbPlanning = await dbContext.Plannings.Include(p => p.Treatment)
                 .SingleOrDefaultAsync(p => p.Id == idPlanning);
             if (dbPlanning == null)
                 throw new Exception("The planning doesn't exist");
