@@ -107,11 +107,13 @@ namespace Server
                 }
             }
             string responseMsg = JsonSerializer.Serialize(response);
+            Console.WriteLine($"Sendind response to client: {responseMsg}");
             clientOut.Write(responseMsg);
         }
 
         private async Task<Response> CreatePlanning(Request request)
         {
+            Console.WriteLine("Creating planning...");
             Planning planning = await _service.CreatePlanning(request.Name, request.Cnp, request.Date, request.TreatmentLocation, request.TreatmentType,
                 request.TreatmentDate);
             return new()
@@ -129,6 +131,7 @@ namespace Server
 
         private async Task<Response> CreatePayment(Request request)
         {
+            Console.WriteLine("Creating payment...");
             Payment payment = await _service.CreatePayment(request.Id, request.Cnp, request.Date, request.Sum);
             return new()
             {
@@ -143,6 +146,7 @@ namespace Server
 
         private async Task<Response> RemovePlanning(Request request)
         {
+            Console.WriteLine("Removing planning...");
             await _service.RemovePlanning(request.Id);
             return new()
             {
@@ -154,6 +158,7 @@ namespace Server
         {
             while (true)
             {
+                return;
                 Thread.Sleep(_millisecondsToVerify);
 
                 //verify

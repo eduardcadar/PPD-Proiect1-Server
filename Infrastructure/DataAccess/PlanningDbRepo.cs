@@ -25,6 +25,10 @@ namespace Infrastructure.DataAccess
         public async Task<Planning> Add(Planning planning)
         {
             var dbContext = InitializeDbContext();
+            var treatment = dbContext.Treatments.Single(t => t.TreatmentType == planning.Treatment.TreatmentType);
+            if (planning.TreatmentDate.Hour < 10 || planning.TreatmentDate.AddMinutes(treatment.Duration).Hour > 18)
+                throw new Exception("Locatiile sunt deschise doar intre orele 10-18");
+
             int numberOfPlannings = await dbContext.Plannings
                 .Where(p => p.TreatmentLocation == planning.TreatmentLocation
                     && p.TreatmentType == planning.Treatment.TreatmentType
